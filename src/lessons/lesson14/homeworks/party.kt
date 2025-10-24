@@ -1,4 +1,4 @@
-ackage lessons.lesson14.homeworks
+package lessons.lesson14.homeworks
 
 /**
  * Класс, описывающий вечеринку
