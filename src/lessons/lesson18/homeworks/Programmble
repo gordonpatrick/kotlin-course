@@ -1,0 +1,21 @@
+abstract class ProgrammableDevice : PowerableDevice(), Programmable {
+   protected var programmedAction: String = ""
+   
+   override fun programAction(action: String) {
+      if (!checkPowerState()) return
+      
+      programmedAction = action
+      println("${this::class.simpleName}: программа установлена - '$action'")
+   }
+   
+   override fun execute() {
+      if (!checkPowerState()) return
+      
+      if (programmedAction.isEmpty()) {
+         println("${this::class.simpleName}: нет запрограммированной программы")
+         return
+      }
+      
+      println("${this::class.simpleName}: выполнение программы - '$programmedAction'")
+   }
+}
