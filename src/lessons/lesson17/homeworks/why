@@ -73,3 +73,241 @@ class ChildrenClass(
       return "Это генерация из дочернего класса"
   }
 }
+Вопрос 1: Почему privateVal доступно в main() для чтения из класса ChildrenClass?
+ОТВЕТ: privateVal в конструкторе ChildrenClass - это НОВОЕ СВОЙСТВО дочернего класса, а не то же самое поле из BaseClass.
+
+В ChildrenClass мы объявили val privateVal: String в конструкторе, что создает публичное свойство с автоматическим getter. Это просто параметр, который передается в BaseClass, но в самом ChildrenClass это публичное свойство.
+
+Ключевое различие:
+
+В BaseClass: private val privateVal - приватное, недоступно извне
+
+В ChildrenClass: val privateVal - публичное, создает getter
+
+kotlin
+val child = ChildrenClass("Значение", "Защищенное", "Публичное")
+println(child.privateVal)  // Работает! Это свойство ChildrenClass, не BaseClass
+Вопрос 2: Почему protectedVal недоступно в main()?
+ОТВЕТ: protectedVal объявлено как protected в BaseClass. Protected поля доступны только внутри класса и его наследников, но НЕ доступны извне (из main()).
+
+В ChildrenClass мы не создали публичное свойство protectedVal (не указали val или var перед параметром конструктора), поэтому оно остается недоступным из main().
+
+kotlin
+class ChildrenClass(
+  val privateVal: String,        // val - создает публичное свойство
+  protectedVal: String,          // БЕЗ val/var - просто параметр конструктора
+  publicVal: String              // БЕЗ val/var - просто параметр конструктора
+)
+Вопросы 3-4: Как изменить publicField на "Антонио Бандерас"?
+ПРОБЛЕМА: publicField имеет custom setter с проверкой verifyPublicField(), которая разрешает строки длиной < 3 символов. "Антонио Бандерас" слишком длинная строка.
+
+РЕШЕНИЕ: Создать публичный метод в ChildrenClass, который либо:
+
+Обойдет проверку, напрямую изменив поле
+
+Переопределит verifyPublicField() для разрешения длинных строк
+
+kotlin
+class ChildrenClass(...) : BaseClass(...) {
+    // Вариант 1: Переопределяем проверку
+    override fun verifyPublicField(value: String): Boolean {
+        return true  // Разрешаем любую длину
+    }
+    
+    // Вариант 2: Создаем публичный сеттер
+    fun setPublicFieldDirect(value: String) {
+        publicField = value  // Все равно вызовет setter с проверкой
+    }
+}
+
+fun main() {
+    val child = ChildrenClass(...)
+    child.publicField = "Антонио Бандерас"  // Теперь работает!
+    println(child.getAll())
+}
+Вопрос 5: Как изменить protectedField из main()?
+ОТВЕТ: Создать публичный метод-сеттер в ChildrenClass, так как protectedField доступен в наследнике, но не доступен из main() напрямую.
+
+kotlin
+class ChildrenClass(...) : BaseClass(...) {
+    fun setProtectedField(value: String) {
+        protectedField = value  // Доступно в наследнике
+    }
+}
+
+fun main() {
+    val child = ChildrenClass(...)
+    child.setProtectedField("Новое значение")
+}
+Вопрос 6: Как изменить privateField из main()?
+ОТВЕТ: Это НЕВОЗМОЖНО без изменения BaseClass! Private поля не доступны даже в наследниках.
+
+Решения:
+
+Добавить публичный или protected setter в BaseClass
+
+Изменить private var на protected var
+
+Использовать рефлексию (не рекомендуется)
+
+kotlin
+// В BaseClass нужно добавить:
+fun setPrivateField(value: String) {
+    privateField = value
+}
+Вопрос 7: Почему getProtectedClass() не может быть публичной?
+ОТВЕТ: Функция возвращает ProtectedClass, который объявлен как protected class. Protected класс не может быть возвращен из публичной функции, так как это нарушило бы систему модификаторов доступа - внешний код получил бы доступ к protected типу.
+
+Правило в Kotlin: видимость возвращаемого типа не может быть более ограниченной, чем видимость функции.
+
+kotlin
+// Ошибка компиляции!
+public fun getProtectedClass(): ProtectedClass  // ProtectedClass менее доступен
+
+// Правильно:
+protected fun getProtectedClass(): ProtectedClass
+Вопрос 8: Почему в поле "generate" другой текст при вызове из ChildrenClass?
+ОТВЕТ: Метод generate() переопределен (override) в ChildrenClass. Благодаря полиморфизму, когда getAll() вызывает generate(), вызывается версия из дочернего класса, а не из BaseClass.
+
+Это происходит потому, что:
+
+generate() помечен как open в базовом классе
+
+generate() переопределен в дочернем классе
+
+При вызове используется динамическая диспетчеризация (runtime polymorphism)
+
+kotlin
+val child = ChildrenClass(...)
+println(child.getAll())
+// В выводе будет: "generate: Это генерация из дочернего класса"
+Вопрос 9: Почему getPrivateClass() не может быть публичной или protected?
+ОТВЕТ: Функция возвращает PrivateClass, который объявлен как private class. Private класс доступен только внутри BaseClass, поэтому функция, возвращающая его, тоже должна быть private.
+
+kotlin
+// Ошибка компиляции!
+public fun getPrivateClass(): PrivateClass     // Ошибка
+protected fun getPrivateClass(): PrivateClass  // Ошибка
+
+// Правильно:
+private fun getPrivateClass(): PrivateClass    // OK
+Вопрос 10: Почему publicVal доступен в main() несмотря на то, что это не поле?
+ВАЖНО: Это НЕВЕРНОЕ утверждение! publicVal НЕ доступен в main() из ChildrenClass, потому что мы не объявили его как val publicVal или var publicVal в конструкторе ChildrenClass.
+
+Он просто передается в BaseClass, но не становится свойством ChildrenClass.
+
+kotlin
+class ChildrenClass(
+  val privateVal: String,   // Это СВОЙСТВО - доступно в main()
+  protectedVal: String,     // Это ПАРАМЕТР - НЕ доступно в main()
+  publicVal: String         // Это ПАРАМЕТР - НЕ доступно в main()
+)
+
+fun main() {
+    val child = ChildrenClass(...)
+    println(child.privateVal)  // OK
+    println(child.publicVal)   // ОШИБКА КОМПИЛЯЦИИ!
+}
+Чтобы сделать его доступным, нужно:
+
+kotlin
+class ChildrenClass(
+  val privateVal: String,
+  protectedVal: String,
+  val publicVal: String     // Добавили val!
+) : BaseClass(...)
+Вопрос 11: Почему в main() доступна функция getAll()?
+ОТВЕТ: ChildrenClass наследуется от BaseClass (: BaseClass(...)). Все публичные методы родительского класса автоматически наследуются дочерним классом.
+
+getAll() - публичный метод в BaseClass, поэтому он доступен через экземпляр ChildrenClass.
+
+Это основной принцип наследования в ООП:
+
+Дочерний класс получает все публичные и protected члены родителя
+
+Private члены НЕ наследуются
+
+kotlin
+val child = ChildrenClass(...)
+child.getAll()  // Работает, хотя метод определен в BaseClass
+Вопрос 12: Почему не происходит переопределение метода privatePrint()?
+ОТВЕТ: Private методы НЕ могут быть переопределены! Они не участвуют в полиморфизме.
+
+privatePrint() в ChildrenClass - это совершенно отдельный метод, который никак не связан с privatePrint() из BaseClass. Когда printText() вызывает privatePrint(), всегда вызывается версия из BaseClass.
+
+Причина:
+
+Private методы доступны только внутри класса, где они объявлены
+
+Они не видны наследникам
+
+Не могут быть помечены как open
+
+Не участвуют в механизме переопределения
+
+kotlin
+fun main() {
+    val child = ChildrenClass(...)
+    child.printText()  
+    // Выведет: "Печать из класса BaseClass"
+    // НЕ выведет: "Печать из класса ChildrenClass"
+}
+Доработанный класс ChildrenClass
+kotlin
+class ChildrenClass(
+  val privateVal: String,
+  protectedVal: String,
+  publicVal: String
+) : BaseClass(privateVal, protectedVal, publicVal) {
+  
+  // Переопределяем проверку для разрешения любой длины
+  override fun verifyPublicField(value: String): Boolean {
+      return true  // Разрешаем любую длину строки
+  }
+  
+  // Сеттер для protectedField
+  fun setProtectedField(value: String) {
+      protectedField = value
+  }
+  
+  // Private метод (не переопределяет родительский!)
+  private fun privatePrint() {
+      println("Печать из класса ChildrenClass")
+  }
+  
+  override fun generate(): String {
+      return "Это генерация из дочернего класса"
+  }
+}
+
+fun main() {
+    val child = ChildrenClass("Приватное", "Защищенное", "Публичное")
+    
+    // Задание 3-4: Изменяем publicField
+    child.publicField = "Антонио Бандерас"
+    
+    // Задание 5: Изменяем protectedField
+    child.setProtectedField("Новое значение")
+    
+    // Задание 8: Проверяем getAll()
+    println(child.getAll())
+    
+    // Задание 12: Проверяем printText()
+    child.printText()  // Выведет "Печать из класса BaseClass"
+}
+Ключевые выводы
+val/var в конструкторе создают свойства класса
+
+Параметры без val/var - просто параметры, не свойства
+
+private - доступно только в своем классе
+
+protected - доступно в классе и наследниках
+
+public (по умолчанию) - доступно везде
+
+Private методы не переопределяются - это отдельные методы
+
+Видимость типа возврата не может быть меньше видимости метода
+
+Полиморфизм работает только с open/override методами
