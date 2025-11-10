@@ -1,0 +1,42 @@
+// Холодильник
+abstract class Refrigerator : Powerable, Openable, TemperatureRegulatable, WaterContainer {
+   override val capacity: Int = 100
+   override val maxTemperature: Int = 8
+}
+
+// Стиральная машина
+abstract class WashingMachine : Powerable, Openable, Programmable, WaterConnection, 
+   Drainable, Timable, TemperatureRegulatable {
+   override val maxTemperature: Int = 90
+}
+
+// Умная лампа
+abstract class SmartLamp : Powerable, LightEmitting, Programmable, BatteryOperated
+
+// Электронные часы
+abstract class ElectronicClock : Powerable, LightEmitting, BatteryOperated, Timable
+
+// Робот-пылесос
+abstract class VacuumRobot : Powerable, Movable, Cleanable, Rechargeable, AutomaticShutdown {
+   override val sensorType: String = "DustSensor"
+   override val maxSensoredValue: Int = 100
+}
+
+// Механические часы
+abstract class MechanicalClock : Mechanical, Timable
+
+// Фонарик
+abstract class Flashlight : Powerable, LightEmitting, BatteryOperated
+
+// Кофемашина
+abstract class CoffeeMachine : Powerable, Openable, TemperatureRegulatable, 
+   WaterContainer, Timable, Programmable {
+   override val capacity: Int = 50
+   override val maxTemperature: Int = 95
+}
+
+// Умная колонка
+abstract class SmartSpeaker : Powerable, SoundEmitting, Programmable, LightEmitting, Rechargeable
+
+// Экземпляр InputStream для примера
+import java.io.InputStream
