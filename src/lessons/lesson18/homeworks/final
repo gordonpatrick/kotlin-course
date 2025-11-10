@@ -1,0 +1,160 @@
+// Холодильник
+class ConcreteRefrigerator : TemperatureControllableDevice(), WaterContainer {
+   override val capacity: Int = 100
+   override val maxTemperature: Int = 8
+   private var waterLevel: Int = 0
+   
+   override fun fillWater(amount: Int) {
+      if (!checkPowerState()) return
+      
+      if (waterLevel + amount > capacity) {
+         println("Холодильник: невозможно налить, переполнение! Максимум: $capacity")
+         return
+      }
+      
+      waterLevel += amount
+      println("Холодильник: добавлено $amount л воды. Текущий уровень: $waterLevel л")
+   }
+   
+   override fun getWater(amount: Int) {
+      if (!checkPowerState()) return
+      
+      if (waterLevel - amount < 0) {
+         println("Холодильник: недостаточно воды!")
+         return
+      }
+      
+      waterLevel -= amount
+      println("Холодильник: выдано $amount л воды. Текущий уровень: $waterLevel л")
+   }
+}
+
+// Стиральная машина
+class ConcreteWashingMachine : TemperatureControllableDevice(), WaterConnection, 
+   Drainable, Timable {
+   
+   override val maxTemperature: Int = 90
+   private var waterLevel: Int = 0
+   private var washTime: Int = 0
+   private var isConnectedToSupply: Boolean = false
+   private var isConnectedToDrain: Boolean = false
+   
+   override fun connectToWaterSupply() {
+      if (!checkPowerState()) return
+      
+      isConnectedToSupply = true
+      println("Стиральная машина: подключена к водопроводу")
+   }
+   
+   override fun getWater(amount: Int) {
+      if (!checkPowerState()) return
+      if (!isConnectedToSupply) {
+         println("Стиральная машина: не подключена к водопроводу!")
+         return
+      }
+      
+      waterLevel += amount
+      println("Стиральная машина: подано $amount л воды. Уровень: $waterLevel л")
+   }
+   
+   override fun connectToDrain() {
+      if (!checkPowerState()) return
+      
+      isConnectedToDrain = true
+      println("Стиральная машина: подключена к сливу")
+   }
+   
+   override fun drain() {
+      if (!checkPowerState()) return
+      if (!isConnectedToDrain) {
+         println("Стиральная машина: не подключена к сливу!")
+         return
+      }
+      
+      println("Стиральная машина: слив воды... было $waterLevel л воды")
+      waterLevel = 0
+   }
+   
+   override fun setTimer(time: Int) {
+      if (!checkPowerState()) return
+      
+      washTime = time
+      println("Стиральная машина: время стирки установлено на $time минут")
+   }
+}
+
+// Чайник
+class Kettle : TemperatureControllableDevice(), WaterContainer, Timable {
+   override val capacity: Int = 3
+   override val maxTemperature: Int = 100
+   private var waterLevel: Int = 0
+   private var boilTime: Int = 0
+   
+   override fun fillWater(amount: Int) {
+      if (!checkPowerState()) return
+      
+      if (waterLevel + amount > capacity) {
+         println("Чайник: переполнение! Максимум: $capacity л")
+         return
+      }
+      
+      waterLevel += amount
+      println("Чайник: добавлено $amount л воды. Уровень: $waterLevel л")
+   }
+   
+   override fun getWater(amount: Int) {
+      if (!checkPowerState()) return
+      
+      if (waterLevel - amount < 0) {
+         println("Чайник: недостаточно воды!")
+         return
+      }
+      
+      waterLevel -= amount
+      println("Чайник: налито $amount л воды. Осталось: $waterLevel л")
+   }
+   
+   override fun setTimer(time: Int) {
+      if (!checkPowerState()) return
+      
+      boilTime = time
+      println("Чайник: время кипячения установлено на $time секунд")
+   }
+}
+
+// Духовка
+class Oven : TemperatureControllableDevice() {
+   override val maxTemperature: Int = 250
+   private var isDoorOpen: Boolean = false
+   
+   override fun open() {
+      if (isDoorOpen) {
+         println("Духовка: дверца уже открыта")
+         return
+      }
+      
+      isDoorOpen = true
+      println("Духовка: дверца открыта")
+   }
+   
+   override fun close() {
+      if (!isDoorOpen) {
+         println("Духовка: дверца уже закрыта")
+         return
+      }
+      
+      isDoorOpen = false
+      println("Духовка: дверца закрыта")
+   }
+   
+   fun bake(dishName: String) {
+      if (!checkPowerState()) return
+      
+      if (isDoorOpen) {
+         println("Духовка: закройте дверцу перед запеканием!")
+         return
+      }
+      
+      println("Духовка: запекание '$dishName' при температуре ${currentTemperature}°C")
+   }
+}
