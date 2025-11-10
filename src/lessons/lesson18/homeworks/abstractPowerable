@@ -1,0 +1,29 @@
+abstract class PowerableDevice : Powerable {
+   protected var isOn: Boolean = false
+   
+   override fun powerOn() {
+      if (!isOn) {
+         isOn = true
+         println("${this::class.simpleName} включен")
+      } else {
+         println("${this::class.simpleName} уже включен")
+      }
+   }
+   
+   override fun powerOff() {
+      if (isOn) {
+         isOn = false
+         println("${this::class.simpleName} выключен")
+      } else {
+         println("${this::class.simpleName} уже выключен")
+      }
+   }
+   
+   protected fun checkPowerState(): Boolean {
+      if (!isOn) {
+         println("Ошибка: ${this::class.simpleName} выключен. Включите питание!")
+         return false
+      }
+      return true
+   }
+}
