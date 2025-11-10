@@ -1,0 +1,38 @@
+abstract class TemperatureControllableDevice : ProgrammableDevice(), 
+   TemperatureRegulatable, Openable {
+   
+   protected var currentTemperature: Int = 20
+   protected var isOpen: Boolean = false
+   
+   override fun setTemperature(temp: Int) {
+      if (!checkPowerState()) return
+      
+      if (temp < 0 || temp > maxTemperature) {
+         println("${this::class.simpleName}: температура вне допустимого диапазона (0-$maxTemperature)")
+         return
+      }
+      
+      currentTemperature = temp
+      println("${this::class.simpleName}: температура установлена на $temp°C")
+   }
+   
+   override fun open() {
+      if (isOpen) {
+         println("${this::class.simpleName}: уже открыт")
+         return
+      }
+      
+      isOpen = true
+      println("${this::class.simpleName}: открыт")
+   }
+   
+   override fun close() {
+      if (!isOpen) {
+         println("${this::class.simpleName}: уже закрыт")
+         return
+      }
+      
+      isOpen = false
+      println("${this::class.simpleName}: закрыт")
+   }
+}
