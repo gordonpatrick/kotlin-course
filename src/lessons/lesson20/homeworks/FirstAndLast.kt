@@ -1,4 +1,4 @@
-package lessons.lesson19.homeworks
+package lessons.lesson20.homeworks
 
 /**
  * Расширение функция для массива чисел
