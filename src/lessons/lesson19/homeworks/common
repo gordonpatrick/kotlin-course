@@ -1,0 +1,38 @@
+fun main() {
+    // 1. getMiddleElement
+    println(getMiddleElement(listOf(1, 2, 3, 4, 5))) // 3
+    println(getMiddleElement(listOf(1, 2, 3, 4))) // null
+    
+    // 2. ListHolder
+    val holder = ListHolder<String>()
+    holder.addElement("Первый")
+    holder.addElement("Второй")
+    println(holder.getAllElements()) // [Первый, Второй]
+    
+    // 3-4. Mapper и PhrasesToListOfStrings
+    val mapper = PhrasesToListOfStrings()
+    println(mapper.map("Привет мир")) // [Привет, мир]
+    println(mapper.mapList(listOf("Один два", "Три четыре"))) 
+    // [[Один, два], [Три, четыре]]
+    
+    // 5. transposition
+    val original = mapOf("a" to 1, "b" to 2, "c" to 3)
+    println(transposition(original)) // {1=a, 2=b, 3=c}
+    
+    // 6-7. StringValidator
+    val stringValidator = StringValidator()
+    println(stringValidator.validate("Текст")) // true
+    println(stringValidator.validate(null)) // false
+    println(stringValidator.validate("   ")) // false
+    
+    // 8. OddValidator
+    val oddValidator = OddValidator()
+    println(oddValidator.validate(4)) // true (чётное)
+    println(oddValidator.validate(5)) // false (нечётное)
+    
+    // 9. ListValidator
+    val listValidator = ListValidator<Int>()
+    println(listValidator.validate(listOf(1, 2, 3))) // true
+    println(listValidator.validate(listOf(1, 0, 3))) // false (есть 0)
+    println(listValidator.validate(listOf(1, null, 3))) // false (есть null)
+}
