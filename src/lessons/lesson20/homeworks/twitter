@@ -1,0 +1,62 @@
+package lessons.lesson19.homeworks
+
+/**
+ * Расширение функция для строки
+ * Выводит строку побуквенно в верхнем регистре в столбик: имя пользователя и буква под ним
+ * Формат вывода похож на игру в Твиттере где слово собирается из ответов разных пользователей
+ */
+fun String.printWordWithUsernames(usernames: List<String>) {
+    val uppercase = this.uppercase()
+    
+    for (i in uppercase.indices) {
+        if (i < usernames.size) {
+            println(usernames[i])
+            println(uppercase[i])
+        } else {
+            println("User${i + 1}")
+            println(uppercase[i])
+        }
+        println()
+    }
+}
+
+/**
+ * Альтернативная версия - возвращает строку вместо вывода в консоль
+ */
+fun String.buildWordWithUsernames(usernames: List<String>): String {
+    val uppercase = this.uppercase()
+    val result = StringBuilder()
+    
+    for (i in uppercase.indices) {
+        val username = if (i < usernames.size) {
+            usernames[i]
+        } else {
+            "User${i + 1}"
+        }
+        
+        result.append(username).append("\n")
+        result.append(uppercase[i]).append("\n")
+        result.append("\n")
+    }
+    
+    return result.toString()
+}
+
+// Примеры использования:
+fun testWordCollector() {
+    val word = "слово"
+    val users = listOf("@Alice", "@Bob", "@Charlie", "@Diana", "@Eve")
+    
+    println("Вывод в консоль:")
+    word.printWordWithUsernames(users)
+    
+    println("\n=== Альтернативная версия ===\n")
+    val formatted = word.buildWordWithUsernames(users)
+    print(formatted)
+    
+    // Ещё примеры:
+    println("\n=== Пример с английским словом ===\n")
+    val englishWord = "code"
+    val englishUsers = listOf("@John", "@Jane", "@Jack", "@Jill")
+    englishWord.printWordWithUsernames(englishUsers)
+}
