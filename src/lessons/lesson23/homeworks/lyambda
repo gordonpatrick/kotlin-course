@@ -1,0 +1,212 @@
+fun main() {
+    // ==================== ЗАДАЧА 1: Среднее арифметическое чётных чисел ====================
+    
+    // Обычная функция
+    fun averageOfEvenNumbers(numbers: List<Int>): Double {
+        require(numbers.isNotEmpty()) { "Список не должен быть пустым" }
+        
+        val evenNumbers = numbers.filter { it % 2 == 0 }
+        require(evenNumbers.isNotEmpty()) { "В списке нет чётных чисел" }
+        
+        return evenNumbers.average()
+    }
+    
+    // Анонимная функция
+    val averageOfEvenAnonymous = fun(numbers: List<Int>): Double {
+        require(numbers.isNotEmpty()) { "Список не должен быть пустым" }
+        
+        val evenNumbers = numbers.filter { it % 2 == 0 }
+        require(evenNumbers.isNotEmpty()) { "В списке нет чётных чисел" }
+        
+        return evenNumbers.average()
+    }
+    
+    // Лямбда выражение с указанием типа
+    val averageOfEvenLambdaTyped: (List<Int>) -> Double = { numbers ->
+        require(numbers.isNotEmpty()) { "Список не должен быть пустым" }
+        
+        val evenNumbers = numbers.filter { it % 2 == 0 }
+        require(evenNumbers.isNotEmpty()) { "В списке нет чётных чисел" }
+        
+        evenNumbers.average()
+    }
+    
+    // Лямбда выражение без указания типа
+    val averageOfEvenLambda = { numbers: List<Int> ->
+        require(numbers.isNotEmpty()) { "Список не должен быть пустым" }
+        
+        val evenNumbers = numbers.filter { it % 2 == 0 }
+        require(evenNumbers.isNotEmpty()) { "В списке нет чётных чисел" }
+        
+        evenNumbers.average()
+    }
+    
+    // Проверка работы лямбда выражения
+    println("=== ЗАДАЧА 1: Среднее арифметическое чётных чисел ===")
+    
+    val testData1 = listOf(1, 2, 3, 4, 5, 6)
+    println("Список: $testData1")
+    println("Среднее чётных: ${averageOfEvenLambda(testData1)}")
+    println()
+    
+    val testData2 = listOf(10, 20, 30, 40)
+    println("Список: $testData2")
+    println("Среднее чётных: ${averageOfEvenLambda(testData2)}")
+    println()
+    
+    val testData3 = listOf(1, 3, 5, 7, 8)
+    println("Список: $testData3")
+    println("Среднее чётных: ${averageOfEvenLambda(testData3)}")
+    println()
+    
+    // Тест с пустым списком
+    try {
+        val testData4 = emptyList<Int>()
+        println("Список: $testData4")
+        println("Среднее чётных: ${averageOfEvenLambda(testData4)}")
+    } catch (e: IllegalArgumentException) {
+        println("Ошибка для пустого списка: ${e.message}")
+    }
+    println()
+    
+    // Тест со списком без чётных чисел
+    try {
+        val testData5 = listOf(1, 3, 5, 7)
+        println("Список: $testData5")
+        println("Среднее чётных: ${averageOfEvenLambda(testData5)}")
+    } catch (e: IllegalArgumentException) {
+        println("Ошибка для списка без чётных: ${e.message}")
+    }
+    println()
+    
+    
+    // ==================== ЗАДАЧА 2: Сумма цифр числа ====================
+    
+    // Обычная функция
+    fun sumOfDigits(number: Long): Int {
+        require(number > 0) { "Число должно быть больше нуля" }
+        
+        return number.toString().sumOf { it.digitToInt() }
+    }
+    
+    // Анонимная функция
+    val sumOfDigitsAnonymous = fun(number: Long): Int {
+        require(number > 0) { "Число должно быть больше нуля" }
+        
+        return number.toString().sumOf { it.digitToInt() }
+    }
+    
+    // Лямбда выражение с указанием типа
+    val sumOfDigitsLambdaTyped: (Long) -> Int = { number ->
+        require(number > 0) { "Число должно быть больше нуля" }
+        
+        number.toString().sumOf { it.digitToInt() }
+    }
+    
+    // Лямбда выражение без указания типа
+    val sumOfDigitsLambda = { number: Long ->
+        require(number > 0) { "Число должно быть больше нуля" }
+        
+        number.toString().sumOf { it.digitToInt() }
+    }
+    
+    // Проверка работы лямбда выражения
+    println("=== ЗАДАЧА 2: Сумма цифр числа ===")
+    
+    val testNumber1 = 12345L
+    println("Число: $testNumber1")
+    println("Сумма цифр: ${sumOfDigitsLambda(testNumber1)}")
+    println()
+    
+    val testNumber2 = 999999999L
+    println("Число: $testNumber2")
+    println("Сумма цифр: ${sumOfDigitsLambda(testNumber2)}")
+    println()
+    
+    val testNumber3 = 1L
+    println("Число: $testNumber3")
+    println("Сумма цифр: ${sumOfDigitsLambda(testNumber3)}")
+    println()
+    
+    val testNumber4 = 987654321123456789L
+    println("Число: $testNumber4")
+    println("Сумма цифр: ${sumOfDigitsLambda(testNumber4)}")
+    println()
+    
+    // Тест с нулём или отрицательным числом
+    try {
+        val testNumber5 = 0L
+        println("Число: $testNumber5")
+        println("Сумма цифр: ${sumOfDigitsLambda(testNumber5)}")
+    } catch (e: IllegalArgumentException) {
+        println("Ошибка для нуля: ${e.message}")
+    }
+    println()
+    
+    try {
+        val testNumber6 = -123L
+        println("Число: $testNumber6")
+        println("Сумма цифр: ${sumOfDigitsLambda(testNumber6)}")
+    } catch (e: IllegalArgumentException) {
+        println("Ошибка для отрицательного числа: ${e.message}")
+    }
+    println()
+    
+    
+    // ==================== ЗАДАЧА 3: Множество дубликатов ====================
+    
+    // Функция-расширение
+    fun List<Int>.findDuplicates(): Set<Int> {
+        return this.groupBy { it }
+            .filter { it.value.size > 1 }
+            .keys
+    }
+    
+    // Анонимная функция
+    val findDuplicatesAnonymous = fun(numbers: List<Int>): Set<Int> {
+        return numbers.groupBy { it }
+            .filter { it.value.size > 1 }
+            .keys
+    }
+    
+    // Лямбда выражение с указанием типа
+    val findDuplicatesLambdaTyped: (List<Int>) -> Set<Int> = { numbers ->
+        numbers.groupBy { it }
+            .filter { it.value.size > 1 }
+            .keys
+    }
+    
+    // Проверка работы лямбда выражения
+    println("=== ЗАДАЧА 3: Множество дубликатов ===")
+    
+    val testList1 = listOf(1, 2, 3, 2, 4, 5, 3, 6, 1)
+    println("Список: $testList1")
+    println("Дубликаты: ${findDuplicatesLambdaTyped(testList1)}")
+    println()
+    
+    val testList2 = listOf(1, 2, 3, 4, 5)
+    println("Список: $testList2")
+    println("Дубликаты: ${findDuplicatesLambdaTyped(testList2)}")
+    println()
+    
+    val testList3 = listOf(7, 7, 7, 7)
+    println("Список: $testList3")
+    println("Дубликаты: ${findDuplicatesLambdaTyped(testList3)}")
+    println()
+    
+    val testList4 = emptyList<Int>()
+    println("Список: $testList4")
+    println("Дубликаты: ${findDuplicatesLambdaTyped(testList4)}")
+    println()
+    
+    val testList5 = listOf(10, 20, 30, 10, 20, 30, 10)
+    println("Список: $testList5")
+    println("Дубликаты: ${findDuplicatesLambdaTyped(testList5)}")
+    println()
+    
+    // Демонстрация работы функции-расширения
+    println("=== Использование функции-расширения ===")
+    val testList6 = listOf(5, 5, 10, 15, 10, 20, 25)
+    println("Список: $testList6")
+    println("Дубликаты (через расширение): ${testList6.findDuplicates()}")
+}
